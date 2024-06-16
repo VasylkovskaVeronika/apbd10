@@ -22,5 +22,47 @@ public class DbService : IDbService
             .Where(e => patientLastName == null || e.LastName == patientLastName)
             .ToListAsync();
     }
-    
+
+    public async Task<bool> DoesPatientExist(int patientID)
+    {
+        return await _context.Patients.AnyAsync(e => e.IdPatient == patientID);
+    }
+
+    public async Task<bool> DoesDoctorExist(string doctorName)
+    {
+        return await _context.Doctors.AnyAsync(e => e.LastName==doctorName);
+    }
+
+    public async Task<bool> DoesMedicamentExist(int MedicamentID)
+    {
+        return await _context.Medicaments.AnyAsync(e => e.IdMedicament == MedicamentID);
+    }
+
+    public async Task AddNewPrescription(Prescription p)
+    {
+        await _context.AddAsync(p);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AddNewPatient(Patient p)
+    {
+        await _context.AddAsync(p);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Medicament?> GetMedicamentById(int id)
+    {
+        return await _context.Medicaments.FirstOrDefaultAsync(e => e.IdMedicament== id);
+    }
+
+    public async Task AddPrescription_Medicament(IEnumerable<Prescription_Medicament> Precription_Medicaments)
+    {
+        await _context.AddRangeAsync(Precription_Medicaments);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Doctor?> GetDoctorByLastName(string doctorName)
+    {
+        return await _context.Doctors.FirstOrDefaultAsync(e => e.LastName==doctorName);
+    }
 }
